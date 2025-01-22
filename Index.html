@@ -78,25 +78,35 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
-        #message {
+        #messageContainer {
+            position: relative;
             display: none;
+            text-align: center;
+            width: 100%;
+        }
+
+        #message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             font-size: 24px;
             font-weight: bold;
             color: #ff85b3;
             text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
-            position: relative;
+            z-index: 1; /* يجعل النص تحت الصورة */
         }
 
         #kittyImage {
-            display: none;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0);
             opacity: 0;
             animation: fadeInScale 2s forwards;
-            width: 50%; /* تصغير عرض الصورة إلى النصف */
-            height: auto; /* الحفاظ على التناسب */
+            width: 50%;
+            height: auto;
+            z-index: 2; /* يجعل الصورة فوق النص */
         }
 
         @keyframes fadeInScale {
@@ -116,11 +126,14 @@
         <input type="text" id="textInput" placeholder="اكتب شيئاً">
         <button onclick="handleSubmit()">Send</button>
     </div>
-    <div id="message" class="fade-in">نوران عمتككك</div>
-    <img id="kittyImage" src="https://i.postimg.cc/5N899whj/IMG-0577.png" alt="Hello Kitty">
+    <div id="messageContainer">
+        <img id="kittyImage" src="https://imagizer.imageshack.com/v2/150x100q70/924/Oe9wlT.png" alt="Hello Kitty">
+        <div id="message" class="fade-in">نوران عمتككك</div>
+    </div>
 
     <script>
         const formContainer = document.getElementById('formContainer');
+        const messageContainer = document.getElementById('messageContainer');
         const message = document.getElementById('message');
         const kittyImage = document.getElementById('kittyImage');
 
@@ -129,37 +142,34 @@
             setTimeout(() => {
                 formContainer.style.display = 'none';
 
-                // إظهار النص
+                // إظهار النص والصورة
+                messageContainer.style.display = 'block';
+                kittyImage.style.display = 'block';
                 message.style.display = 'block';
 
-                // بعد 2 ثانية، تظهر الصورة الشفافة
+                // جعل الصورة تظهر تدريجياً
                 setTimeout(() => {
-                    kittyImage.style.display = 'block';
                     kittyImage.style.opacity = 1;
                     kittyImage.style.transform = "translate(-50%, -50%) scale(1)";
-
-                    // اختفاء تدريجي للصورة بعد 2 ثانية
-                    setTimeout(() => {
-                        kittyImage.style.opacity = 0;
-                        kittyImage.style.transform = "translate(-50%, -50%) scale(1.5)";
-                    }, 2000);
                 }, 2000);
+
+                // اختفاء تدريجي للصورة بعد 2 ثانية
+                setTimeout(() => {
+                    kittyImage.style.opacity = 0;
+                    kittyImage.style.transform = "translate(-50%, -50%) scale(1.5)";
+                }, 4000);
             }, 1000);
 
             // بعد 6 ثوانٍ، يعود النموذج ويختفي النص والصورة
             setTimeout(() => {
-                message.classList.add('fade-out');
-                setTimeout(() => {
-                    message.style.display = 'none';
-                    message.classList.remove('fade-in', 'fade-out');
-                    kittyImage.style.display = 'none';
-                    kittyImage.style.opacity = 1;
-                    kittyImage.style.transform = "translate(-50%, -50%) scale(0)";
+                messageContainer.style.display = 'none';
+                message.style.display = 'none';
+                kittyImage.style.opacity = 0;
+                kittyImage.style.transform = "translate(-50%, -50%) scale(0)";
 
-                    formContainer.style.display = 'block';
-                    formContainer.classList.add('fade-in');
-                    document.getElementById('textInput').value = '';
-                }, 1000);
+                formContainer.style.display = 'block';
+                formContainer.classList.add('fade-in');
+                document.getElementById('textInput').value = '';
             }, 6000);
         }
     </script>
